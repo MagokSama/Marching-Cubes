@@ -1,0 +1,25 @@
+﻿#pragma kernel Density
+#include "/Includes/Density.compute"
+#include "UnityCG.cginc"
+
+float force;
+float range;
+float3 hitPoint;
+
+[numthreads(numThreads, numThreads, numThreads)]
+void Density(int3 id : SV_DispatchThreadID)
+{
+	if (id.x >= numPointsPerAxis || id.y >= numPointsPerAxis || id.z >= numPointsPerAxis) {
+		return;
+	}
+
+	float3 pos = centre + id * spacing - boundsSize / 2;
+
+	if (distance(pos, hitPoint) < range) {
+		int index = indexFromCoord(id.x, id.y, id.z);
+		points[index].w += force;
+	}
+
+
+
+}
